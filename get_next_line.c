@@ -6,7 +6,7 @@
 /*   By: afournie <afournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 13:48:17 by afournie          #+#    #+#             */
-/*   Updated: 2025/11/24 15:22:08 by afournie         ###   ########.fr       */
+/*   Updated: 2025/11/24 16:42:42 by afournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,52 +63,45 @@ char	*extract_line(char *stash)
 	return (line);
 }
 
-char	*get_next_line(int fd)
+char	*read_to_stash(int fd, char *stash)
 {
-	static char	*stash;
-	char		*buffer;
-	char		*ligne;
-	int			i;
+	char	*buffer;
+	int		i;
 
-	if (!fd || BUFFER_SIZE <= 0)
-		return (NULL);
-	i = 0;
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
-	if (!stash)
-		stash = ft_strdup("");
 	while (!ft_find_break(stash))
 	{
 		i = read(fd, buffer, BUFFER_SIZE);
 		if (i < 0)
+		{
+			free(buffer);
+			free(stash);
+			return (NULL);
+		}
+		if (i == 0)
 			break ;
 		buffer[i] = '\0';
 		stash = ft_strjoin(stash, buffer);
 	}
 	free(buffer);
-	if (!stash || stash[0] == '\0')
+	return (stash);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*stash;
+	char		*ligne;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (!stash)
+		stash = ft_strdup("");
+	stash = read_to_stash(fd, stash);
+	if (!stash)
 		return (NULL);
 	ligne = extract_line(stash);
 	stash = clean_stash(stash);
 	return (ligne);
 }
-/*
-int	main(void)
-{
-	int		fd;
-	char	*res;
-	int		i;
-
-	i = 0;
-	fd = open("test.txt", O_RDONLY);
-	if (fd == -1)
-		return (0);
-	while (i < 4)
-	{
-		res = get_next_line(fd);
-		printf("get_next_line : '%s' \n", res);
-		i++;
-	}
-}
-*/
