@@ -6,11 +6,31 @@
 /*   By: afournie <afournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 13:48:37 by afournie          #+#    #+#             */
-/*   Updated: 2025/11/19 13:55:41 by afournie         ###   ########.fr       */
+/*   Updated: 2025/11/24 15:10:09 by afournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char	*ft_strdup(const char *s)
+{
+	int		i;
+	int		size;
+	char	*new;
+
+	i = 0;
+	size = ft_strlen(s);
+	new = malloc(sizeof(char) * (size + 1));
+	if (!new)
+		return (NULL);
+	while (s[i])
+	{
+		new[i] = s[i];
+		i++;
+	}
+	new[i] = '\0';
+	return (new);
+}
 
 int	ft_find_break(char *s)
 {
