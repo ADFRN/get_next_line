@@ -6,32 +6,41 @@
 /*   By: afournie <afournie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 13:48:17 by afournie          #+#    #+#             */
-/*   Updated: 2025/11/25 12:06:36 by afournie         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:46:57 by afournie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+static char	*append_buf(char *stash, char *buffer)
+{
+	char	*tmp;
+
+	if (!stash)
+		stash = ft_strdup("");
+	tmp = stash;
+	stash = ft_strjoin(tmp, buffer);
+	free(tmp);
+	return (stash);
+}
+
 static char	*read_doc(int fd, char *buffer, char *stash)
 {
-	int		read_line;
-	char	*char_temp;
+	int	read_line;
 
 	read_line = 1;
 	while (!(stash && ft_strchr(stash, '\n')) && read_line > 0)
 	{
 		read_line = read(fd, buffer, BUFFER_SIZE);
 		if (read_line == -1)
+		{
+			free(stash);
 			return (NULL);
-		else if (read_line == 0)
+		}
+		if (read_line == 0)
 			break ;
 		buffer[read_line] = '\0';
-		if (!stash)
-			stash = ft_strdup("");
-		char_temp = stash;
-		stash = ft_strjoin(char_temp, buffer);
-		free(char_temp);
-		char_temp = NULL;
+		stash = append_buf(stash, buffer);
 		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
@@ -68,16 +77,15 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE +1));
+	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	line = read_doc(fd, buffer, stash);
-	if (line == NULL)
-		free (stash);
+	stash = read_doc(fd, buffer, stash);
 	free(buffer);
 	buffer = NULL;
-	if (!line)
+	if (!stash)
 		return (NULL);
+	line = stash;
 	stash = set_line(line);
 	return (line);
 }
