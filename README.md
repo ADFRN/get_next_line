@@ -6,7 +6,7 @@ Implémentation de `get_next_line(int fd)`, une fonction qui lit et retourne la 
   - Retourne la prochaine ligne lue depuis `fd` (inclut `\n` si présent).
   - Retourne `NULL` en cas de fin de fichier ou d'erreur.
   - La chaîne retournée doit être libérée par l’appelant avec `free`.
-  
+
 ## Fichiers
 - `get_next_line.c` — logique principale (lecture, extraction et gestion du stash)
 - `get_next_line_utils.c` — utilitaires (duplication, concaténation, longueur, détection de `\n`)
