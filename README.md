@@ -1,5 +1,7 @@
 # get_next_line
 
+![Result](./result.png)
+
 Implémentation de `get_next_line(int fd)`, une fonction qui lit et retourne la prochaine ligne (terminée par `\n` si présent) depuis un descripteur de fichier.
 
 ## `char *get_next_line(int fd);`
